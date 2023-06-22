@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definição da estrutura do nó da lista
+typedef struct dieta {
+    char nomeComida[50];
+    float pesoPorcao;
+    int numCalorias;
+    struct dieta* proximo;
+} Dieta;
+
+// Função para inserir uma comida na lista
+void inserirComida(Dieta** lista) {
+    Dieta* novaComida = (Dieta*)malloc(sizeof(Dieta));
+
+    printf("Digite o nome da comida: ");
+    scanf("%s", novaComida->nomeComida);
+    printf("Digite o peso de uma porção (em gramas): ");
+    scanf("%f", &novaComida->pesoPorcao);
+    printf("Digite o número de calorias: ");
+    scanf("%d", &novaComida->numCalorias);
+
+    novaComida->proximo = *lista;
+    *lista = novaComida;
+}
+
+// Função para listar todas as comidas da lista
+void listarComidas(Dieta* lista) {
+    printf("----- Lista de Comidas -----\n");
+    while (lista != NULL) {
+        printf("Nome: %s\n", lista->nomeComida);
+        printf("Peso da Porção: %.2fg\n", lista->pesoPorcao);
+        printf("Número de Calorias: %d\n", lista->numCalorias);
+        printf("\n");
+        lista = lista->proximo;
+    }
+}
+
+int main() {
+    Dieta* lista = NULL;
+    int opcao;
+
+    do {
+        printf("------ Menu ------\n");
+        printf("1. Inserir comida\n");
+        printf("2. Listar comidas\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                inserirComida(&lista);
+                break;
+            case 2:
+                listarComidas(lista);
+                break;
+            case 3:
+                printf("Encerrando o programa.\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
+                break;
+        }
+
+        printf("\n");
+    } while (opcao != 3);
+
+    return 0;
+}
