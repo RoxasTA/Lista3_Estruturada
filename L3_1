@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definição da estrutura do nó da lista
+typedef struct restaurante {
+    char nome[50];
+    char endereco[100];
+    float precoMedio;
+    char tipoComida[50];
+    struct restaurante* proximo;
+} Restaurante;
+
+// Função para inserir um restaurante na lista
+void inserirRestaurante(Restaurante** lista) {
+    Restaurante* novoRestaurante = (Restaurante*)malloc(sizeof(Restaurante));
+
+    printf("Digite o nome do restaurante: ");
+    scanf("%s", novoRestaurante->nome);
+    printf("Digite o endereço do restaurante: ");
+    scanf("%s", novoRestaurante->endereco);
+    printf("Digite o preço médio do restaurante: ");
+    scanf("%f", &novoRestaurante->precoMedio);
+    printf("Digite o tipo de comida do restaurante: ");
+    scanf("%s", novoRestaurante->tipoComida);
+
+    novoRestaurante->proximo = *lista;
+    *lista = novoRestaurante;
+}
+
+// Função para listar todos os restaurantes da lista
+void listarRestaurantes(Restaurante* lista) {
+    printf("----- Lista de Restaurantes -----\n");
+    while (lista != NULL) {
+        printf("Nome: %s\n", lista->nome);
+        printf("Endereço: %s\n", lista->endereco);
+        printf("Preço Médio: R$%.2f\n", lista->precoMedio);
+        printf("Tipo de Comida: %s\n", lista->tipoComida);
+        printf("\n");
+        lista = lista->proximo;
+    }
+}
+
+int main() {
+    Restaurante* lista = NULL;
+    int opcao;
+
+    do {
+        printf("------ Menu ------\n");
+        printf("1. Inserir restaurante\n");
+        printf("2. Listar restaurantes\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                inserirRestaurante(&lista);
+                break;
+            case 2:
+                listarRestaurantes(lista);
+                break;
+            case 3:
+                printf("Encerrando o programa.\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
+                break;
+        }
+
+        printf("\n");
+    } while (opcao != 3);
+
+    return 0;
+}
+
