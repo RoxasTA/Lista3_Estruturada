@@ -1,0 +1,153 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Definição da estrutura do nó da lista
+typedef struct veiculo {
+    char proprietario[50];
+    char combustivel[10];
+    char modelo[50];
+    char cor[20];
+    char chassi[20];
+    int ano;
+    char placa[8];
+    struct veiculo* proximo;
+} Veiculo;
+
+// Função para inserir um veículo na lista
+void inserirVeiculo(Veiculo** lista) {
+    Veiculo* novoVeiculo = (Veiculo*)malloc(sizeof(Veiculo));
+
+    printf("Digite o nome do proprietário: ");
+    scanf("%s", novoVeiculo->proprietario);
+    printf("Digite o tipo de combustível (álcool, diesel, gasolina): ");
+    scanf("%s", novoVeiculo->combustivel);
+    printf("Digite o modelo do veículo: ");
+    scanf("%s", novoVeiculo->modelo);
+    printf("Digite a cor do veículo: ");
+    scanf("%s", novoVeiculo->cor);
+    printf("Digite o número do chassi: ");
+    scanf("%s", novoVeiculo->chassi);
+    printf("Digite o ano do veículo: ");
+    scanf("%d", &novoVeiculo->ano);
+    printf("Digite a placa do veículo: ");
+    scanf("%s", novoVeiculo->placa);
+
+    novoVeiculo->proximo = *lista;
+    *lista = novoVeiculo;
+}
+
+// Função para listar proprietários de carros do ano de 2010 ou posterior e movidos a diesel
+void listarProprietariosDiesel2010(Veiculo* lista) {
+    printf("----- Proprietários de Carros Diesel do Ano 2010 ou Posterior -----\n");
+    while (lista != NULL) {
+        if (strcmp(lista->combustivel, "diesel") == 0 && lista->ano >= 2010) {
+            printf("Proprietário: %s\n", lista->proprietario);
+        }
+        lista = lista->proximo;
+    }
+}
+
+// Função para listar placas que começam com J e terminam com 0, 2, 4 ou 7 e seus respectivos proprietários
+void listarPlacasJ(Veiculo* lista) {
+    printf("----- Placas que Começam com J e Terminam com 0, 2, 4 ou 7 -----\n");
+    while (lista != NULL) {
+        if (lista->placa[0] == 'J' && (lista->placa[6] == '0' || lista->placa[6] == '2' || lista->placa[6] == '4' || lista->placa[6] == '7')) {
+            printf("Placa: %s\tProprietário: %s\n", lista->placa, lista->proprietario);
+        }
+        lista = lista->proximo;
+    }
+}
+
+// Função para verificar se uma letra é vogal
+int ehVogal(char letra) {
+    char vogais[] = {'A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'};
+    for (int i = 0; i < 10; i++) {
+        if (letra == vogais[i]) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Função para listar modelo e cor dos veículos cujas placas possuem como segunda letra uma vogal e cuja soma dos valores numéricos fornece um número par
+void listarModeloCorPlacas(Veiculo* lista) {
+    printf("----- Modelo e Cor dos Veículos com Placas Especiais -----\n");
+    while (lista != NULL) {
+        if (ehVogal(lista->placa[1])) {
+            int somaDigitos = (lista->placa[3] - '0') + (lista->placa[4] - '0') + (lista->placa[5] - '0') + (lista->placa[6] - '0');
+            if (somaDigitos % 2 == 0) {
+                printf("Modelo: %s\tCor: %s\n", lista->modelo, lista->cor);
+            }
+        }
+        lista = lista->proximo;
+    }
+}
+
+// Função para trocar o proprietário com base no número do chassi para carros com placas sem dígitos zero
+void trocarProprietario(Veiculo* lista, char* chassi) {
+    while (lista != NULL) {
+        if (strcmp(lista->chassi, chassi) == 0) {
+            if (strchr(lista->placa, '0') == NULL) {
+                printf("Digite o novo nome do proprietário: ");
+                scanf("%s", lista->proprietario);
+                printf("Proprietário alterado com sucesso!\n");
+                return;
+            } else {
+                printf("Este veículo possui dígitos zero na placa. Não é permitido trocar o proprietário.\n");
+                return;
+            }
+        }
+        lista = lista->proximo;
+    }
+    printf("Veículo não encontrado.\n");
+}
+
+int main() {
+    Veiculo* lista = NULL;
+    int opcao;
+
+    do {
+        printf("------ Menu ------\n");
+        printf("1. Inserir veículo\n");
+        printf("2. Listar proprietários de carros diesel do ano 2010 ou posterior\n");
+        printf("3. Listar placas que começam com J e terminam com 0, 2, 4 ou 7\n");
+        printf("4. Listar modelo e cor dos veículos com placas especiais\n");
+        printf("5. Trocar proprietário por número do chassi\n");
+        printf("6. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                inserirVeiculo(&lista);
+                break;
+            case 2:
+                listarProprietariosDiesel2010(lista);
+                break;
+            case 3:
+                listarPlacasJ(lista);
+                break;
+            case 4:
+                listarModeloCorPlacas(lista);
+                break;
+            case 5: {
+                char chassi[20];
+                printf("Digite o número do chassi: ");
+                scanf("%s", chassi);
+                trocarProprietario(lista, chassi);
+                break;
+            }
+            case 6:
+                printf("Encerrando o programa.\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
+                break;
+        }
+
+        printf("\n");
+    } while (opcao != 6);
+
+    return 0;
+}
